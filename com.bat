@@ -1,0 +1,4 @@
+
+Bison -d bison.y
+Flex flex.l
+gcc lex.yy.c bison.tab.c -o flex.exe

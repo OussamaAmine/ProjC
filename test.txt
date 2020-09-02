@@ -1,0 +1,19 @@
+PROGRAM Amffhdhs
+#gzetze
+INTEGER N 
+NUMERIC X,Y
+INTEGER D <- 5 
+D <- 5+6+(-9)+12
+F <- TRUE
+IF(D=5){
+    X<-5
+}
+
+ELSE{
+    X<-3
+    FOR(I IN 6:9){
+        X<-3
+    }
+    #qsdfsdfqsdfsdqfsdsdqgsdgsdgsdgsdqgsdgsdg
+}
+END
