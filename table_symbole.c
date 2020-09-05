@@ -1,6 +1,42 @@
 #include "table_symbole.h"
 
-
+void err_taille_tab(int type,char val[]){
+	if(type==2)
+	{
+		yyerror("\n******************* erreur semantique:taille declare reelle *****************\n");
+	}
+	if(type==3)
+	{
+		yyerror("\n******************* erreur semantique:taille declare caractere *****************\n");
+	}
+	
+	if(type==4)
+	{
+		yyerror("\n******************* erreur semantique:taille declare bool ****************\n");
+	}
+	if((type==1)&&(atoi(val)<=0))
+	{
+		yyerror("\n********* erreur semantique:taille declare entier negatif **********\n");
+	}
+}
+void err_incompa_typ_var(int typdec,int typvar)
+{
+	if(((typdec==1)&&(typvar!=1))||((typdec==2)&&(typvar!=2))
+		 ||((typdec==3)&&(typvar!=3))||((typdec==4)&&(typvar!=4)))			
+	{
+		yyerror("\n********* erreur sÃ©mantique : incompatibilitÃ© de type ***********\n");
+		    	
+	}
+}
+void err_incompa_typ_tab(int typtab,int typvar)
+{
+	if(((typtab==11)&&(typvar!=1))||((typtab==12)&&(typvar!=2))
+		 ||((typtab==13)&&(typvar!=3))||((typtab==14)&&(typvar!=4)))			
+	{
+		yyerror("\n********* erreur sÃ©mantique : incompatibilitÃ© de type ***********\n");
+		    	
+	}
+}
 /*****************************Initialisation de la table des symboles************************************/
 void init () {
 	int i;
@@ -55,20 +91,20 @@ int rechercher(char nom[], element ** in)
 			return i;
 }
 
-/***********************************Fonction qui reccupère le type***************************************/
+/***********************************Fonction qui reccupï¿½re le type***************************************/
 int gettype(char nom[]){
 	element *p;
 	int i = rechercher(nom,&p);
 	if(i==-1){return p->code;}
 }
 
-/**********************Fonction de vérification de la declaration d'un idf******************************/
+/**********************Fonction de vï¿½rification de la declaration d'un idf******************************/
 int declared(char nom[]){
 	element *p;
 	int i = rechercher(nom, &p);
-	/* nom est déclaré */
+	/* nom est dï¿½clarï¿½ */
 	if(i==-1) return 1;
-	/* nom est non déclaré */
+	/* nom est non dï¿½clarï¿½ */
 	else return 0;
 }
 /***********************************Fonction qui retourne le max****************************************/
@@ -98,7 +134,7 @@ void afficher(){
 printf("\n********************************************\n");
 printf("*            Table des symboles            *\n");
 printf("********************************************\n");
-printf("_______________________________________________________\n");
+printf(" __________________________________________________________________\n");
 printf("| NomEntite 	       |CodeEntite	   |Information           |\n");
 printf("|______________________|___________________|______________________|\n");
 
@@ -109,7 +145,7 @@ int i=0;
 
   		while(p!=NULL)
   		{
-  			 printf("|%21s |%18d | %21d |\n",p->nom,p->code, p->taille);
+  			 printf("|%21s |%18d | %20s |\n",p->nom,p->code,p->nature);
   			 p=p->suiv;
   		}
 
@@ -120,7 +156,7 @@ printf("|______________________|___________________|______________________|\n");
 
 /********************************************Fonctions d'optimisation***************************************/
 
-/******************************Variable déclarée non utilisée*********************************************/
+/******************************Variable dï¿½clarï¿½e non utilisï¿½e*********************************************/
 void used(char nom[]){
 	int i;
 	element *q;

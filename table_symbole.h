@@ -32,4 +32,6 @@ void afficher();
 void used(char nom[]);
 void delete_unused();
 void modifier( char nom[], int code);
-
+void err_taille_tab(int type,char val[]);
+void err_incompa_typ_tab(int typtab,int typvar);
+void err_incompa_typ_var(int typdec,int typvar);

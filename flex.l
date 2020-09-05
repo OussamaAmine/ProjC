@@ -10,9 +10,9 @@
 chiffre [0-9]
 lettreMaj [A-Z]
 lettremin [a-z]
-inte 0|[1-9][0-9]*
-ninte "(-"[1-9][0-9]*")"
-numeric {chiffre}+[.]{chiffre}+|"(-"{chiffre}+[.]{chiffre}+")"
+inte ("("[+-]([1-9][0-9]*|0)")")|([1-9][0-9]*|0)
+
+numeric ("("[+-](([1-9][0-9]*|0)"\."[0-9]*[1-9])")")|(([1-9][0-9]*|0)"\."[0-9]*[1-9])
 boolean "TRUE"|"FALSE"
 comment \#(.)*[\n]
 idf {lettreMaj}({lettremin}|{chiffre})*
@@ -28,7 +28,7 @@ chare \'.\'
  
 "PROGRAM" {printf(" MC_prgrm ");col+=yyleng; yylval.chaine = strdup(yytext);return(PRGRM);}
 
-"END" {printf(" MC_End ");col+=yyleng; yylval.chaine = strdup(yytext);return(ENND);}
+"END" {printf(" MC_End \n");col+=yyleng; yylval.chaine = strdup(yytext);return(ENND);}
 
 "INTEGER" {printf(" MC_Integer ");col+=yyleng; yylval.chaine = strdup(yytext);return(INTEGER);}
 
@@ -100,11 +100,27 @@ chare \'.\'
 
 [\t] {col+=yyleng;}
 
-{inte} {if(atoi(yytext)<=32767){printf("  entier positif  \n ");col+=yyleng; yylval.chaine = strdup(yytext); return(inte);}
-else{printf("erreur lexicale cet entier est supperieur a 32767 \n ");}}
+{inte} {
+    char* s=yytext;
+    if(s[0]=='(')
+    {   int i=0,j=1; char* ch[strlen(yytext)-2];
+        for(i=0;i<strlen(s)-1;i++){
+             ch[i]=&s[j];
+             j++;
+        }
+        printf("%d",atoi(*ch));
+        if(atoi(*ch)>=-32768){printf("  entier negatif \n ");col+=yyleng; yylval.chaine = strdup(*ch); }
+        else{printf("erreur lexicale cet entier est inferieur a -32767 \n ");exit(0);}
+    }
+    else{
+    
+        printf("%d",atoi(yytext));
+        if(atoi(yytext)<=32767){printf("  entier positif  \n ");col+=yyleng; yylval.chaine = strdup(yytext); }
+        else{printf(" erreur lexicale cet entier est supperieur a 32767 \n ");exit(0);}
+    }
+    return(inte);
+}
 
-{ninte} {if(atoi(yytext)>=-32768){printf("  entier negatif  \n ");col+=yyleng; yylval.chaine = strdup(yytext); return(ninte);}
-else{printf("             erreur lexicale cet entier est inferieur a -32768 \n ");}}
 
 {numeric} {printf(" Reel_float ");col+=yyleng; yylval.chaine = strdup(yytext);return(reel);}
 
@@ -114,10 +130,10 @@ else{printf("             erreur lexicale cet entier est inferieur a -32768 \n "
 
 {boolean} {printf("    Boolean   ");col+=yyleng; yylval.chaine = strdup(yytext); return(booleen);}
 
-{idf} { if(yyleng>10){printf("erreur lexicale:idf trop long ligne %d colonne %d \n",line,col);} else{ printf(" IDF  "); col+=yyleng; yylval.chaine = strdup(yytext); return(IDF);}}
+{idf} { if(yyleng>10){printf("erreur lexicale:idf trop long ligne %d colonne %d \n",line,col);exit(0);} else{ printf(" IDF  "); col+=yyleng; yylval.chaine = strdup(yytext); return(IDF);}}
 
 
-. {printf ("\n erreur lexicale entite %s ligne %d colonne %d \n",yytext,line,col);col+=yyleng;}
+. {printf ("\n erreur lexicale entite %s ligne %d colonne %d \n",yytext,line,col);col+=yyleng;exit(0);}
 
 %%
 int yywrap () {return 1;}
