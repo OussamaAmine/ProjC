@@ -47,6 +47,7 @@ int k;
 
 %type <NT>valeur
 %type <NT>Expression_Arth
+%type <NT>lgiq
 %start start_code
 %%
 
@@ -200,7 +201,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 				}
 				generer("=",$3.val,"",$1);
 			}	
-			|IDF AFF PO PO Expression_lgiq PF VIR Expression VIR Expression PF
+			|IDF AFF PO PO Expression_lgiq PF VIR Expression_Arth VIR Expression_Arth PF
 ;
 
 			
@@ -213,10 +214,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 
 
 
-Expression: Expression_Arth
-			| Expression_lgiq 
-			
-			;
+
 		
 			Expression_Arth: Expression_Arth ADD Expression_Arth
 							{	
@@ -344,7 +342,6 @@ Expression: Expression_Arth
 							}
 							}
 							|valeur
-
 							;
 			
 							
@@ -355,6 +352,7 @@ Expression: Expression_Arth
 Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					|Expression_lgiq OR Expression_lgiq
 					|lgiq
+					|PO lgiq PF
 					;
 				
 				
@@ -365,6 +363,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					|lgiq INF lgiq
 					|lgiq EGAL lgiq
 					|lgiq DIFF lgiq
+					|Expression_Arth
 					;
 
 
