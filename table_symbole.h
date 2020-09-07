@@ -14,7 +14,7 @@ struct element
 {
 	char nom[30];
 	int code;
-	char nature[30];//constante ou variable
+	char nature[30];//tableau ou variable
 	char taille[255];
 	int used;
 	struct element *suiv;

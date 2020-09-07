@@ -100,6 +100,8 @@ chare \'.\'
 
 [\t] {col+=yyleng;}
 
+{boolean} {printf("    Boolean   ");printf("%s",yytext);col+=yyleng; yylval.chaine = strdup(yytext); return(booleen);}
+
 {inte} {
     char* s=yytext;
     if(s[0]=='(')
@@ -128,7 +130,7 @@ chare \'.\'
 
 {comment} {printf("  Commentaire \n");col+=yyleng; line+=1; yylval.chaine = strdup(yytext);}
 
-{boolean} {printf("    Boolean   ");col+=yyleng; yylval.chaine = strdup(yytext); return(booleen);}
+
 
 {idf} { if(yyleng>10){printf("erreur lexicale:idf trop long ligne %d colonne %d \n",line,col);exit(0);} else{ printf(" IDF  "); col+=yyleng; yylval.chaine = strdup(yytext); return(IDF);}}
 

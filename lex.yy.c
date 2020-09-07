@@ -287,17 +287,17 @@ static void yy_fatal_error YY_PROTO(( yyconst char msg[] ));
 static yyconst short int yy_accept[120] =
     {   0,
         0,    0,   46,   44,   37,   36,    1,   44,   44,   21,
-       44,   29,   30,   19,   17,   31,   18,   20,   38,   38,
+       44,   29,   30,   19,   17,   31,   18,   20,   39,   39,
        16,   25,   26,   23,   43,   43,   43,   43,   43,   43,
        43,   43,   43,   43,   43,   43,   34,   35,   32,   33,
-       28,    0,   41,    0,    0,    0,   38,   27,   24,   22,
+       28,    0,   42,    0,    0,    0,   39,   27,   24,   22,
        43,    0,    0,    0,    0,    0,    0,    8,   12,    0,
-        0,   15,    0,    0,    0,   40,    0,    0,    0,   39,
+        0,   15,    0,    0,    0,   41,    0,    0,    0,   40,
        14,    0,    0,    3,    0,   11,    0,    0,    0,    0,
-        0,    0,   38,    0,    0,    0,   10,    0,    0,    0,
-        0,    0,   42,    0,    0,    0,    0,    0,    0,    0,
+        0,    0,   39,    0,    0,    0,   10,    0,    0,    0,
+        0,    0,   38,    0,    0,    0,    0,    0,    0,    0,
 
-        0,    0,   13,   39,    0,    0,    0,    0,    0,    0,
+        0,    0,   13,   40,    0,    0,    0,    0,    0,    0,
         0,    9,    4,    7,    5,    2,    0,    6,    0
     } ;
 
@@ -883,6 +883,11 @@ YY_RULE_SETUP
 case 38:
 YY_RULE_SETUP
 #line 103 "flex.l"
+{printf("    Boolean   ");printf("%s",yytext);col+=yyleng; yylval.chaine = strdup(yytext); return(booleen);}
+	YY_BREAK
+case 39:
+YY_RULE_SETUP
+#line 105 "flex.l"
 {
     char* s=yytext;
     if(s[0]=='(')
@@ -904,39 +909,34 @@ YY_RULE_SETUP
     return(inte);
 }
 	YY_BREAK
-case 39:
-YY_RULE_SETUP
-#line 125 "flex.l"
-{printf(" Reel_float ");col+=yyleng; yylval.chaine = strdup(yytext);return(reel);}
-	YY_BREAK
 case 40:
 YY_RULE_SETUP
 #line 127 "flex.l"
-{printf(" Caracter ");col+=yyleng; yylval.chaine = strdup(yytext); return(caractere);}
+{printf(" Reel_float ");col+=yyleng; yylval.chaine = strdup(yytext);return(reel);}
 	YY_BREAK
 case 41:
 YY_RULE_SETUP
 #line 129 "flex.l"
-{printf("  Commentaire \n");col+=yyleng; line+=1; yylval.chaine = strdup(yytext);}
+{printf(" Caracter ");col+=yyleng; yylval.chaine = strdup(yytext); return(caractere);}
 	YY_BREAK
 case 42:
 YY_RULE_SETUP
 #line 131 "flex.l"
-{printf("    Boolean   ");col+=yyleng; yylval.chaine = strdup(yytext); return(booleen);}
+{printf("  Commentaire \n");col+=yyleng; line+=1; yylval.chaine = strdup(yytext);}
 	YY_BREAK
 case 43:
 YY_RULE_SETUP
-#line 133 "flex.l"
+#line 135 "flex.l"
 { if(yyleng>10){printf("erreur lexicale:idf trop long ligne %d colonne %d \n",line,col);exit(0);} else{ printf(" IDF  "); col+=yyleng; yylval.chaine = strdup(yytext); return(IDF);}}
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
-#line 136 "flex.l"
+#line 138 "flex.l"
 {printf ("\n erreur lexicale entite %s ligne %d colonne %d \n",yytext,line,col);col+=yyleng;exit(0);}
 	YY_BREAK
 case 45:
 YY_RULE_SETUP
-#line 138 "flex.l"
+#line 140 "flex.l"
 ECHO;
 	YY_BREAK
 #line 943 "lex.yy.c"
@@ -1825,6 +1825,6 @@ int main()
 	return 0;
 	}
 #endif
-#line 138 "flex.l"
+#line 140 "flex.l"
 
 int yywrap () {return 1;}
