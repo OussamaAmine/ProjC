@@ -9,7 +9,7 @@ extern FILE* yyin;/*fichier contenant le code à compiler*/
 extern int line;
 extern int col;
 int sauvtype = 0;
-//int ntemp=1;
+int ntemp=1;
 int qcT=0;
 int qcT2=0;
 int qcT3=0;
@@ -87,7 +87,8 @@ Declaration:MC_type IDF COUV valeur CFER
 									
 			}
 		}
-			
+			|MC_type IDF COUV IDF CFER
+
 			|MC_type IDF AFF valeur
 			{
 				if(declared($2)==1){yyerror("\n***************** double declaration *****************\n");}
@@ -160,7 +161,7 @@ Declaration:MC_type IDF COUV valeur CFER
 		valeur: inte{{$$.type=1;$$.val=$1;}}
 				|reel{{$$.type=2;$$.val=$1;}}
 				|caractere{$$.type=3;$$.val=substring($1);	}
-				|booleen{$$.type=4;$$.val=substring($1);}
+				|booleen{$$.type=4;$$.val=$1;}
 				;
 
 
@@ -193,6 +194,11 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 	    		{
 	    			err_incompa_typ_var(gettype($1),$3.type);
 				}
+			else
+				{	printf("%s -----------------------------------------",$3.val);
+					inserer($1,$3.type,"variable",$3.val);
+				}
+				generer("=",$3.val,"",$1);
 			}	
 			|IDF AFF PO PO Expression_lgiq PF VIR Expression VIR Expression PF
 ;
@@ -212,48 +218,155 @@ Expression: Expression_Arth
 			
 			;
 		
-			Expression_Arth: Arths  Expression_Arth_suite
+			Expression_Arth: Expression_Arth ADD Expression_Arth
+							{	
+								if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
+								{
+									yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");
+								}
+								else
+								{ 
+								$$.type=max($1.type,$3.type);
+								$1.val=strdup($$.val);
+								sprintf($$.val, "T%d", ntemp);
+								generer("+",$1.val,$3.val,$$.val);
+								ntemp++;
+								}
+							}
+							|Expression_Arth SUB Expression_Arth
+							{
+							if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
+							{
+							yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");
+							}
+							else
+							{
+								$$.type=max($1.type,$3.type);
+								$1.val=strdup($$.val);
+								sprintf($$.val, "T%d", ntemp);
+								generer("-",$1.val,$3.val,$$.val);
+								ntemp++;
+							}
+							}
+						
+							|Expression_Arth MUL Expression_Arth
+							{
+							if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
+							{
+								yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");
+							}
+							else
+							{
+								$$.type=max($1.type,$3.type);
+								$1.val=strdup($$.val);
+								sprintf($$.val, "T%d", ntemp);
+								generer("*",$1.val,$3.val,$$.val);
+								ntemp++;
+							}
+							}
+
+							|Expression_Arth DIV Expression_Arth
+
+							{
+							if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
+							{
+								yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");
+							}
+							else
+							{
+								if(atoi($3.val)==0)
+								{
+									yyerror("\n *******erreur semantique : division par zero******\n ");
+								}
+								else
+								{
+								printf("%d",$3.val);
+								$$.type=max($1.type,$3.type);
+								$1.val=strdup($$.val);
+								sprintf($$.val, "T%d", ntemp);
+								generer("/",$1.val,$3.val,$$.val);
+								ntemp++;
+								}
+							}
+							} 
+
+							|IDF
+							{
+							if(declared($1)==0)
+							{
+								yyerror("\n******* erreur semantique : variable non declare  *******\n");
+							}
+							else
+							{
+							used($1);
+							}
+							}
+							|IDF COUV valeur CFER
+							{
+							if(declared($1)==0)
+							{
+								yyerror("\n******* erreur semantique : tableau non declare  *******\n");
+							}
+							else
+							{	
+								if(!(($4.type==1)&&(atoi($4.val)>=0)))
+								{
+								err_taille_tab($4.type,$4.val);
+								}
+								
+								else
+								{
+								char*s;	
+								s=strdup($1);
+								sprintf(s, "%s[%d]", $1,atoi($3));
+								$$.val=strdup(s);
+								used($1);
+								}
+							}
+							}
+							|IDF COUV IDF CFER
+							{
+							if(declared($1)==0)
+							{
+								yyerror("\n******** erreur semantique : tableau non declare  ***********\n");
+							}
+							else
+							{
+							if(declared($3)==0)
+							{
+								yyerror("\n******** erreur semantique : variable non declare  ***********\n");
+							}
+							char*s;	
+							s=strdup($1);
+							sprintf(s, "%s[%s]", $1,$3);
+							$$.val=strdup(s);
+							used($1);
+							}
+							}
+							|valeur
 							;
-							Expression_Arth_suite: Signes Expression_Arth
-													|
-													;
-							Arths:IDF Params
-									|valeur
-									;
-							Params: COUV valeur CFER
-									|
-									;
+			
+							
 
-							Signes: ADD
-									|SUB
-									|MUL
-									|DIV
-									;
+						
 
 
-Expression_lgiq: lgiq  Expression_lgiq_suite			
-				;
-				Expression_lgiq_suite:Signes_lgiq Expression_lgiq
-										|
-				;
-				Signes_lgiq: AND
-							|OR
-							;
+Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
+					|Expression_lgiq OR Expression_lgiq
+					|lgiq
+					;
 				
 				
 				
-				lgiq: Expression_Arth Signes_comparaison Expression_Arth
-					
+				lgiq: lgiq SUPE lgiq
+					|lgiq SUP lgiq
+					|lgiq INFE lgiq
+					|lgiq INF lgiq
+					|lgiq EGAL lgiq
+					|lgiq DIFF lgiq
 					;
 
 
-					Signes_comparaison:	SUPE
-										|SUP
-										|INFE
-									    |INF
-										|EGAL
-										|DIFF
-										;
 Inst_If: IF PO Expression_lgiq PF
 		AOUV corps AFER
 		Inst_elif
@@ -304,6 +417,13 @@ else
 	printf("faute");
 }
 afficher();
+afficher_qdr();
+int k=0,h=0;
+/*while(k<100){
+	while(h<100){
+		printf(" %s ",varr[k][h]);h++;
+	}printf("\n");k++;
+}*/
 fclose(yyin);
 return 0;
 

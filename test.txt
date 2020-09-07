@@ -1,21 +1,33 @@
 PROGRAM Amffhdhs
 #gzetze
-INTEGER Nsd
-NUMERIC X,Y
+INTEGER X,Nsd
+NUMERIC Y
 CHARACTER Z
 INTEGER D <- 5 
-LOGICAL F
+D <- ((D<5),6,7)
 D <- 5+6+(-4400)+12+3276
 F <- TRUE
-#IF(D=5){
-#    X<-5
-#}
+IF(D=5){
+    X<-10/0
+}
 
-#ELSE{
-#   X<-3
-#   FOR(I IN 6:9){
-#        X<-3
- #  }
+ELSE{
+  X<-3
+   FOR(I IN 6:9){
+        X<-3
+  }
 #qsdfsdfqsdfsdqfsdsdqgsdgsdgsdgsdqgsdgsdg
-#}
+}
+FOR(I IN 6:9){
+        X<-3
+        IF(D=5){
+    X<-5
+}
+  }
+  IF(D=5){
+    X<-5
+}
+  FOR(I IN 6:9){
+        X<-3
+  }
 END

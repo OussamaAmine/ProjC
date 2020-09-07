@@ -248,7 +248,7 @@ void assembler(){
 /***********************************Fonction d'affichage des quadruplets************************************************/
 void afficher_qdr()
 {
-printf("*********************Quadruplet***********************\n");
+printf("\n*********************Quadruplet***********************\n");
 
 int i;
 
