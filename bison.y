@@ -309,16 +309,16 @@ Expression: Expression_Arth
 							}
 							else
 							{	
-								if(!(($4.type==1)&&(atoi($4.val)>=0)))
+								if(!(($3.type==1)&&(atoi($3.val)>=0)))
 								{
-								err_taille_tab($4.type,$4.val);
+								err_taille_tab($3.type,$3.val);
 								}
 								
 								else
 								{
 								char*s;	
 								s=strdup($1);
-								sprintf(s, "%s[%d]", $1,atoi($3));
+								sprintf(s, "%s[%d]", $1,atoi($3.val));
 								$$.val=strdup(s);
 								used($1);
 								}
@@ -344,6 +344,7 @@ Expression: Expression_Arth
 							}
 							}
 							|valeur
+
 							;
 			
 							
