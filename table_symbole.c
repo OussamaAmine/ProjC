@@ -123,6 +123,8 @@ void inserer(char nom[], int code,char nature[30], char taille[255]){
 		p->code = code;
 		strcpy(p->nature,nature);
 		strcpy(p->taille,taille);
+		
+		
 		p->used=0;
 		p->suiv = TS[i];
 		TS[i] = p;
@@ -203,3 +205,16 @@ void getNature(char nom[],char nature[])
    if(p!=NULL){strcpy(p->nature,nature);}
 
 }
+/*void getValeur(char nom[],char valeur[])
+{
+    element *p;
+   int i=rechercher(nom, &p);
+   if(p!=NULL){printf("aaaaaaaaaa %s aaaaaaaa",p->taille);
+	   strcpy(p->taille,valeur);}*/
+ char* getValeur(char* idf){
+	element * adr; 
+	rechercher(idf,&adr); 
+	printf("aaaaaaaaaa %s aaaaaaaa",adr->taille);
+	return adr->taille;
+}
+	

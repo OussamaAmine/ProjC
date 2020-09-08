@@ -94,7 +94,11 @@ Declaration:MC_type IDF COUV valeur CFER
 			|MC_type IDF AFF valeur
 			{
 				if(declared($2)==1){yyerror("\n***************** double declaration *****************\n");}
-				else{inserer($2,sauvtype,"variable",$4.val);generer("=",$4.val,"",$2);}
+				else{
+					inserer($2,sauvtype,"variable",$4.val);
+					
+					generer("=",$4.val,"",$2);
+				}
 			}
 			
 			|MC_type  idfs	
@@ -310,7 +314,10 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								yyerror("\n******* erreur semantique : variable non declare  *******\n");
 							}
 							else
-							{
+							{	
+								
+								
+								$$.val=strdup(getValeur($1));
 								$$.type=gettype($1);
 							used($1);
 							}
