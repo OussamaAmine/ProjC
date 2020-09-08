@@ -361,6 +361,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 							}
 							|valeur
 							{
+								$$.val=$1.val;
 								$$.type=$1.type;
 							}
 							;
@@ -389,6 +390,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						$$.type=$1.type;
 					}
 					|PO lgiq PF
+					{
+						$$.type=$2.type;
+					}
 					;
 				
 				
@@ -401,6 +405,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					}
 					else
 					{
+						if($1.val==NULL||$3.val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 					$1.val=strdup($$.val);
 					sprintf($$.val,"T%d",ntemp);
 					quadC(2,$1.val,$3.val,$$.val);
@@ -413,6 +420,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 						}
+						if($1.val==NULL||$3.val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 	   					 $1.val=strdup($$.val);
 	    				sprintf($$.val,"T%d",ntemp);
 	    				quadC(1,$1.val,$3.val,$$.val);
@@ -424,6 +434,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 						}
+						if($1.val==NULL||$3.val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
 						quadC(4,$1.val,$3.val,$$.val);
@@ -434,6 +447,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					{	if(!($1.type==$3.type))
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						}
+						if($1.val==NULL||$3.val==NULL){
+							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
@@ -447,7 +463,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 						}
-						
+						if($1.val==NULL||$3.val==NULL){
+							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
 						quadC(5,$1.val,$3.val,$$.val);
@@ -459,6 +477,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 						}
+						if($1.val==NULL||$3.val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
 						quadC(6,$1.val,$3.val,$$.val);
@@ -467,6 +488,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 
 					|Expression_Arth
 					{
+						$$.val=$1.val;
 						$$.type=$1.type;
 					}
 					;

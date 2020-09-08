@@ -506,9 +506,9 @@ static const yytype_uint16 yyrline[] =
        0,    55,    55,    58,    59,    62,    63,    64,    65,    66,
       70,    92,    94,   100,   103,   129,   158,   159,   160,   161,
      164,   165,   166,   167,   173,   194,   219,   234,   249,   265,
-     281,   306,   318,   342,   362,   373,   380,   387,   391,   396,
-     411,   422,   433,   444,   457,   468,   475,   480,   483,   485,
-     486,   489,   493
+     281,   306,   318,   342,   362,   374,   381,   388,   392,   400,
+     418,   432,   446,   460,   475,   489,   497,   502,   505,   507,
+     508,   511,   515
 };
 #endif
 
@@ -1850,6 +1850,7 @@ yyreduce:
 /* Line 1455 of yacc.c  */
 #line 363 "bison.y"
     {
+								(yyval.NT).val=(yyvsp[(1) - (1)].NT).val;
 								(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
 							;}
     break;
@@ -1857,7 +1858,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 374 "bison.y"
+#line 375 "bison.y"
     {
 							(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 							sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1869,7 +1870,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 381 "bison.y"
+#line 382 "bison.y"
     {
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1881,23 +1882,35 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 388 "bison.y"
+#line 389 "bison.y"
     {
 						(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
+					;}
+    break;
+
+  case 38:
+
+/* Line 1455 of yacc.c  */
+#line 393 "bison.y"
+    {
+						(yyval.NT).type=(yyvsp[(2) - (3)].NT).type;
 					;}
     break;
 
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 397 "bison.y"
+#line 401 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 					{
 						
-						//yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 					}
 					else
 					{
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 					(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 					sprintf((yyval.NT).val,"T%d",ntemp);
 					quadC(2,(yyvsp[(1) - (3)].NT).val,(yyvsp[(3) - (3)].NT).val,(yyval.NT).val);
@@ -1909,10 +1922,13 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 412 "bison.y"
+#line 419 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
 							//yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						}
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 	   					 (yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 	    				sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1924,10 +1940,13 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 423 "bison.y"
+#line 433 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
-							//yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						}
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1939,10 +1958,13 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 434 "bison.y"
+#line 447 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
-							//yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						}
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1954,13 +1976,15 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 445 "bison.y"
+#line 461 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{	
-							printf("--------%d %d-------",(yyvsp[(1) - (3)].NT).type,(yyvsp[(3) - (3)].NT).type);
+							
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
 						}
-						printf("--------%d %d-------",(yyvsp[(1) - (3)].NT).type,(yyvsp[(3) - (3)].NT).type);
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
+						}
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
 						quadC(5,(yyvsp[(1) - (3)].NT).val,(yyvsp[(3) - (3)].NT).val,(yyval.NT).val);
@@ -1971,10 +1995,13 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 458 "bison.y"
+#line 476 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
-							//yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
+						}
+						if((yyvsp[(1) - (3)].NT).val==NULL||(yyvsp[(3) - (3)].NT).val==NULL){
+							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1986,8 +2013,9 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 469 "bison.y"
+#line 490 "bison.y"
     {
+						(yyval.NT).val=(yyvsp[(1) - (1)].NT).val;
 						(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
 					;}
     break;
@@ -1995,7 +2023,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 1999 "bison.tab.c"
+#line 2027 "bison.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2207,7 +2235,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 505 "bison.y"
+#line 527 "bison.y"
 
 int yyerror(char* msg)
 {printf("%s : ligne %d , colonne : %d\n",msg,line,col);
