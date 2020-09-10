@@ -22,13 +22,24 @@ char* convert(int i){
 void quadL(int i, char*b, char* c, char* d){
 	switch(i){
 		case 1 :
-			generer("BNZ",convert(qc+3),b,""); generer("=","","1",d); generer("BR",convert(qc+2),"",""); generer("=","","0",d);
+			generer("BNZ",convert(qc+2),b,"");
+			//generer("=","","1",d); 
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","0",d);
 		break;
 		case 2 :
-			generer("BNZ",convert(qc+4),b,""); generer("BNZ",convert(qc+3),c,"");generer("=","","0",d); generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("BNZ",convert(qc+4),b,""); 
+			generer("BNZ",convert(qc+2),c,"");
+			//generer("=","","0",d); 
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 		case 3 :
-		generer("BZ",convert(qc+4),b,""); generer("BZ",convert(qc+3),c,"");generer("=","","1",d); generer("BR",convert(qc+2),"",""); generer("=","","0",d);
+		generer("BZ",convert(qc+4),b,""); 
+		generer("BZ",convert(qc+2),c,"");
+		//generer("=","","1",d); 
+		//generer("BR",convert(qc+1),"",""); 
+		//generer("=","","0",d);
 		break;
 	}
 }
@@ -37,25 +48,58 @@ void quadL(int i, char*b, char* c, char* d){
 void quadC(int i, char* b, char* c, char* d){
 	switch(i){
 		case 1 :
-			generer("-",b,c,d); generer("BG",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BG",convert(qc+2),d,"");
+			//generer("=","","0",d);
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 		case 2 :
-			generer("-",b,c,d); generer("BGE",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BGE",convert(qc+2),d,"");
+			//generer("=","","0",d);		
+			//generer("=","","1",d);
 		break;
 		case 3 :
-			generer("-",b,c,d); generer("BL",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BL",convert(qc+2),d,"");
+			//generer("=","","0",d);
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 		case 4 :
-			generer("-",b,c,d); generer("BLE",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BLE",convert(qc+2),d,"");
+			//generer("=","","0",d);
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 		case 5 :
-			generer("-",b,c,d); generer("BZ",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BZ",convert(qc+2),d,"");
+			//generer("=","","0",d);
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 		case 6 :
-			generer("-",b,c,d); generer("BNZ",convert(qc+3),d,"");generer("=","","0",d);generer("BR",convert(qc+2),"",""); generer("=","","1",d);
+			generer("-",b,c,d); 
+			generer("BNZ",convert(qc+2),d,"");
+			//generer("=","","0",d);
+			//generer("BR",convert(qc+1),"",""); 
+			//generer("=","","1",d);
 		break;
 	}
 }
+
+/********************************************Mise à jour des branchement**************************************/
+void Maj(int nQc, int jmp){
+	char buff[10];
+	sprintf(buff, "%02d", jmp);
+	liste[nQc].op1=strdup(buff);
+}
+
+
+
 /********************************************Suppression des quads des affectations non utilis�es**************************************/
 void delete_quad(){
 	int i,j,t,p,k;
@@ -321,6 +365,7 @@ void propaDeCopie()
 }
 void simplification_algebrique()
 {
+
 
     int i=0,k1,p,t,l;
     char* temporaire,*temporaire1;

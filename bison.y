@@ -215,7 +215,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 					}
 				}
 			else
-				{	printf("%s -----------------------------------------",$3.val);
+				{	yyerror("%s -----------------------------------------",$3.val);
 					inserer($1,$3.type,"variable",$3.val);
 				}
 				generer("=",$3.val,"",$1);
@@ -266,7 +266,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 							}
 							}
 						
-							|Expression_Arth MUL Expression_Arth
+							| Expression_Arth MUL Expression_Arth
 							{
 							if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
 							{
@@ -371,9 +371,13 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$$.val=$1.val;
 								$$.type=$1.type;
 							}
-							;
-			
 							
+							| PO Expression_Arth PF
+							{
+								$$.val=$2.val;
+								$$.type=$2.type;
+							}
+							;		
 
 						
 
