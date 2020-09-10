@@ -1,6 +1,7 @@
 PROGRAM Amffhdhs
 INTEGER B <- 5
-IF(7<5){   
-    B<-((10*10)+45)-89
+IF(7<5){     
+    B<-10
+    B<-(10+15)/18+14
 }
 END

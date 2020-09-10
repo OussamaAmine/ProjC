@@ -2,7 +2,9 @@
 #include "table_symbole.c"
 #include <stdio.h>
 #include <string.h>
-//extern int ntemp;
+extern int ntemp;
+extern int nbr_inst_if;
+extern int varQuad;
 /***********************************G�n�ration de quadruplets************************************************/
 void generer(char* a, char* b, char* c, char* d){
 	liste[qc].opr=strdup(a);
@@ -61,8 +63,9 @@ void quadC(int i, char* b, char* c, char* d){
 			//generer("=","","1",d);
 		break;
 		case 3 :
+		
 			generer("-",b,c,d); 
-			generer("BL",convert(qc+2),d,"");
+			generer("BL",convert(ntemp),d,"");	
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);

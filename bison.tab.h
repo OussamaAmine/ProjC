@@ -88,7 +88,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1685 of yacc.c  */
-#line 22 "bison.y"
+#line 24 "bison.y"
 	int num;
 	float flo;
 	char *chaine;
