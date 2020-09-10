@@ -11,7 +11,7 @@ extern int col;
 int sauvtype = 0;
 int nbr_inst_if=0;
 int ntemp=1;
-int varQuad=1 ,varBrch=1;
+int varQuad=1 ,varBrch=0;
 int qcT=0;
 int qcT2=0;
 int qcT3=0;
@@ -58,8 +58,8 @@ start_code: PRGRM IDF  corps ENND
 ;
 
 corps:  Instructions corps{
-		if(nbr_inst_if==1){
-			//varBrch=varQuad;
+		if(nbr_inst_if!=1){
+			//varBrch++;
 		}
 	}
 		|
@@ -403,12 +403,14 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							sprintf($$.val,"T%d",ntemp);
 							quadL(3,$1.val,$3.val,$$.val);							
 							ntemp++;
+							varBrch++;
 						} 
 					|Expression_lgiq OR Expression_lgiq
 					{
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
 						quadL(2,$1.val,$3.val,$$.val);						
+						varBrch++;
 						ntemp++;
 						}
 					|lgiq
@@ -467,7 +469,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						sprintf($$.val,"T%d",ntemp);
 						quadC(4,$1.val,$3.val,$$.val);						
 						ntemp++;
-						varQuad=ntemp++;
+						varQuad=ntemp;
 					}
 
 					|lgiq INF lgiq
@@ -523,12 +525,12 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 
 
 Inst_If: IF {nbr_inst_if++;} PO Expression_lgiq PF
-		AOUV{varBrch++;} corps AFER {Maj(varQuad,varBrch);}
+		AOUV{/*varBrch++;*/} corps { Maj(varQuad,varBrch);}AFER 
 		Inst_elif
 		;
 
 Inst_elif: ELSEIF PO Expression_lgiq PF
-			AOUV corps AFER
+			AOUV corps { Maj(varQuad,varBrch);}AFER
 			Inst_else 
 			|Inst_else
 ;

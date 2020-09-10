@@ -2,6 +2,13 @@ PROGRAM Amffhdhs
 INTEGER B <- 5
 IF(7<5){     
     B<-10
-    B<-(10+15)/18+14
+    B<-(10+15)/18+1
+}ELSE IF(7>5){
+    B<-10
+    B<-(10+15)/18+1
+}
+ELSE{
+    B<-10
+    B<-10
 }
 END
