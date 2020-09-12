@@ -21,3 +21,5 @@ void propaDeCopie();
 void propaDeCopie();
 void simplification_algebrique();
   void elimination_code_inutile();
+  void Maj(int nQc, int jmp);
+

@@ -9,7 +9,9 @@ extern FILE* yyin;/*fichier contenant le code à compiler*/
 extern int line;
 extern int col;
 int sauvtype = 0;
+int nbr_inst_if=0;
 int ntemp=1;
+int varQuad=1 ,varBrch=0;
 int qcT=0;
 int qcT2=0;
 int qcT3=0;
@@ -55,7 +57,11 @@ int k;
 start_code: PRGRM IDF  corps ENND
 ;
 
-corps:  Instructions corps
+corps:  Instructions corps{
+		if(nbr_inst_if!=1){
+			//varBrch++;
+		}
+	}
 		|
 ;
 
@@ -83,7 +89,9 @@ Declaration:MC_type IDF COUV valeur CFER
 				{
 					inserer($2,10+sauvtype,"tableau",$4.val);
 					generer("BOUNDS","1",$4.val,"");
+					varBrch++;
 					generer("ADEC",$2,"","");
+					varBrch++;
 				}	
 									
 									
@@ -98,6 +106,7 @@ Declaration:MC_type IDF COUV valeur CFER
 					inserer($2,sauvtype,"variable",$4.val);
 					
 					generer("=",$4.val,"",$2);
+					varBrch++;
 				}
 			}
 			
@@ -192,6 +201,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 	    				s=strdup($1);
 	    				sprintf(s, "%s[%d]",$1,atoi($3.val));
 						generer("=",$6.val,"",s);
+						varBrch++;
 	    			}
 	    		}
     		}
@@ -205,6 +215,8 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 					inserer($1,$3.type,"variable",$3.val);
 				}
 				generer("=",$3.val,"",$1);
+				ntemp++;
+				varBrch++;
 			}	
 			/*|IDF AFF Expression_lgiq
 			{if(declared($1)==1)
@@ -215,10 +227,12 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 					}
 				}
 			else
-				{	printf("%s -----------------------------------------",$3.val);
+				{	yyerror("%s -----------------------------------------",$3.val);
 					inserer($1,$3.type,"variable",$3.val);
 				}
 				generer("=",$3.val,"",$1);
+				ntemp++;
+				varBrch++;
 			}*/
 			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
 ;
@@ -247,6 +261,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$1.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
 								generer("+",$1.val,$3.val,$$.val);
+								varBrch++;
 								ntemp++;
 								}
 							}
@@ -262,11 +277,12 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$1.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
 								generer("-",$1.val,$3.val,$$.val);
+								varBrch++;
 								ntemp++;
 							}
 							}
 						
-							|Expression_Arth MUL Expression_Arth
+							| Expression_Arth MUL Expression_Arth
 							{
 							if(($1.type==3)||($3.type==3)||($1.type==4)||($3.type==4))
 							{
@@ -278,6 +294,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$1.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
 								generer("*",$1.val,$3.val,$$.val);
+								varBrch++;								
 								ntemp++;
 							}
 							}
@@ -302,6 +319,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$1.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
 								generer("/",$1.val,$3.val,$$.val);
+								varBrch++;								
 								ntemp++;
 								}
 							}
@@ -371,25 +389,28 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 								$$.val=$1.val;
 								$$.type=$1.type;
 							}
-							;
-			
 							
-
-						
-
+							| PO Expression_Arth PF
+							{
+								$$.val=$2.val;
+								$$.type=$2.type;
+							}
+							;						
 
 Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					{
 							$1.val=strdup($$.val);
 							sprintf($$.val,"T%d",ntemp);
-							quadL(3,$1.val,$3.val,$$.val);
+							quadL(3,$1.val,$3.val,$$.val);							
 							ntemp++;
+							varBrch++;
 						} 
 					|Expression_lgiq OR Expression_lgiq
 					{
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
-						quadL(2,$1.val,$3.val,$$.val);
+						quadL(2,$1.val,$3.val,$$.val);						
+						varBrch++;
 						ntemp++;
 						}
 					|lgiq
@@ -417,7 +438,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						}
 					$1.val=strdup($$.val);
 					sprintf($$.val,"T%d",ntemp);
-					quadC(2,$1.val,$3.val,$$.val);
+					quadC(2,$1.val,$3.val,$$.val);					
 					ntemp++;
 					}
 				} 
@@ -430,11 +451,11 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						if($1.val==NULL||$3.val==NULL){
 							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
-	   					 $1.val=strdup($$.val);
-	    				sprintf($$.val,"T%d",ntemp);
-	    				quadC(1,$1.val,$3.val,$$.val);
-	   					 ntemp++;
-   					 }
+						$1.val=strdup($$.val);
+						sprintf($$.val,"T%d",ntemp);
+						quadC(1,$1.val,$3.val,$$.val);						
+						ntemp++;
+					}
 
 					|lgiq INFE lgiq
 					{	if(!($1.type==$3.type))
@@ -446,8 +467,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
-						quadC(4,$1.val,$3.val,$$.val);
+						quadC(4,$1.val,$3.val,$$.val);						
 						ntemp++;
+						varQuad=ntemp;
 					}
 
 					|lgiq INF lgiq
@@ -460,8 +482,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
-						quadC(3,$1.val,$3.val,$$.val);
-						ntemp++;
+						quadC(3,$1.val,$3.val,$$.val);						
+						ntemp++;				
+						varQuad=ntemp;		
 					}
 
 					|lgiq EGAL lgiq
@@ -475,7 +498,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
-						quadC(5,$1.val,$3.val,$$.val);
+						quadC(5,$1.val,$3.val,$$.val);						
 						ntemp++;
 					}
 
@@ -489,7 +512,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						}
 						$1.val=strdup($$.val);
 						sprintf($$.val,"T%d",ntemp);
-						quadC(6,$1.val,$3.val,$$.val);
+						quadC(6,$1.val,$3.val,$$.val);						
 						ntemp++;
 					}
 
@@ -501,17 +524,17 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					;
 
 
-Inst_If: IF PO Expression_lgiq PF
-		AOUV corps AFER
+Inst_If: IF {nbr_inst_if++;} PO Expression_lgiq PF
+		AOUV{/*varBrch++;*/} corps { Maj(varQuad,varBrch);}AFER 
 		Inst_elif
 		;
 
 Inst_elif: ELSEIF PO Expression_lgiq PF
-			AOUV corps AFER
+			AOUV corps { Maj(varQuad,varBrch);}AFER
 			Inst_else 
 			|Inst_else
 ;
-Inst_else: ELSE AOUV corps AFER	
+Inst_else: ELSE AOUV corps AFER	{nbr_inst_if=0;}
 			|
 			;
 
