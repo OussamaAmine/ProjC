@@ -57,11 +57,9 @@ int k;
 start_code: PRGRM IDF  corps ENND
 ;
 
-corps:  Instructions corps{
-		if(nbr_inst_if!=1){
-			//varBrch++;
-		}
-	}
+corps:  Instructions corps
+		
+	
 		|
 ;
 
@@ -123,18 +121,7 @@ Declaration:MC_type IDF COUV valeur CFER
 							{
 								inserer($1,sauvtype,"variable","0");
 								printf("sauv type %d \n",sauvtype);
-								/*récupérer les variables dans un tableau*/
-								/*int i=0;
-								j++;
-								char* s=malloc(sizeof(3));
-								strcpy(s,$1);					
-
-								while(i<strlen(s))
-								{
-									varr[j][i]=s[i];
-									i++;
-								}
-								varr[j][i]='\0';*/
+								
 													
 							} } 
 						
@@ -151,27 +138,18 @@ Declaration:MC_type IDF COUV valeur CFER
 							inserer($1,sauvtype,"variable","0");
 
 							printf("sauv type %d \n",sauvtype);
-							/*int i=0;
-							j++;
-							char* s=malloc(sizeof(3));
-							strcpy(s,$1);					
-
-							while(i<strlen(s))
-							{
-								varr[j][i]=s[i];
-								i++;
-							}
-							varr[j][i]='\0';*/ 
+							
+							
 							
 							
 					}	    
 			}
 						;
 
-		MC_type: INTEGER {sauvtype=1;while(j>=0){modifier(varr[j],sauvtype);j--;}}
-				|FLOAT {sauvtype=2;while(j>=0){modifier(varr[j],sauvtype);j--;}j=0;}
-				|CHAR {sauvtype=3;while(j>=0){modifier(varr[j],sauvtype);j--;}j=0;}
-				|BOOL{sauvtype=4;while(j>=0){modifier(varr[j],sauvtype);j--;}}
+		MC_type: INTEGER {sauvtype=1;}
+				|FLOAT {sauvtype=2;}
+				|CHAR {sauvtype=3;}
+				|BOOL{sauvtype=4;}
 				;
 
 		valeur: inte{{$$.type=1;$$.val=$1;}}
@@ -183,7 +161,7 @@ Declaration:MC_type IDF COUV valeur CFER
 
 
 
-Affectation: IDF COUV valeur CFER AFF Expression_Arth 
+Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 			{
 				if(declared($1)==0)
 	    		{
@@ -235,19 +213,74 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 				varBrch++;
 			}*/
 			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
+			|IDF ADD AFF valeur
+			{
+				if(declared($1)==0)
+	    		{
+	    			yyerror("\n************* erreur semantique : variable non declare *********\n");
+				}
+				if(gettype($1)!=1)
+				{
+					yyerror("\n********* erreur semantique : variable pas de type INTEGER *******\n");	
+				}
+				if($4.type!=1)
+				{
+					yyerror("\n********* erreur semantique : valeur pas de type INTEGER *******\n");	
+				}
+				char sss[10];
+				sprintf(sss, "T%d", ntemp);
+			
+				generer("=",$1," ",sss);	
+				varBrch++;
+				generer("+",sss,$4.val,sss);	
+				varBrch++;					
+				generer("=",sss," ",$1);				
+				varBrch++;	
+				
+				int x= atoi(getValeur($1))+atoi($4.val);
+				
+				sprintf(sss,"%d",x);
+				
+				setValeur($1,sss);			
+				ntemp++;	
+				
+			}
+			|IDF SUB AFF valeur
+			{
+				if(declared($1)==0)
+	    		{
+	    			yyerror("\n*********** erreur semantique : variable non declare **********\n");
+				}
+				if(gettype($1)!=1)
+				{
+				yyerror("\n********* erreur semantique : variable pas de type INTEGER *******\n");	
+				}
+				if($4.type!=1)
+				{
+					yyerror("\n********* erreur semantique : valeur pas de type INTEGER *******\n");	
+				}
+				
+				char sss[10];
+				sprintf(sss, "T%d", ntemp);
+			
+				generer("=",$1," ",sss);	
+				varBrch++;
+				generer("-",sss,$4.val,sss);	
+				varBrch++;					
+				generer("=",sss," ",$1);				
+				varBrch++;	
+				
+				int x= atoi(getValeur($1))-atoi($4.val);
+				
+				sprintf(sss,"%d",x);
+				
+				setValeur($1,sss);		
+				ntemp++;								
+			}
 ;
 
 			
 						
-
-
-
-
-
-
-
-
-
 		
 			Expression_Arth: Expression_Arth ADD Expression_Arth
 							{	
@@ -325,6 +358,31 @@ Affectation: IDF COUV valeur CFER AFF Expression_Arth
 							}
 							} 
 
+							/*|PO Expression_Arth DIV Expression_Arth PF
+
+							{
+							if(($2.type==3)||($4.type==3)||($2.type==4)||($4.type==4))
+							{
+								yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");
+							}
+							else
+							{
+								if(atoi($4.val)==0)
+								{
+									yyerror("\n *******erreur semantique : division par zero******\n ");
+								}
+								else
+								{
+								printf("%d",$4.val);
+								$$.type=max($2.type,$4.type);
+								$2.val=strdup($$.val);
+								sprintf($$.val, "T%d", ntemp);
+								generer("/",$2.val,$4.val,$$.val);
+								varBrch++;								
+								ntemp++;
+								}
+							}
+							} */
 							|IDF
 							{
 							if(declared($1)==0)
@@ -417,10 +475,12 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					{
 						$$.type=$1.type;
 					}
-					|PO lgiq PF
+					|PO Expression_lgiq PF 
 					{
 						$$.type=$2.type;
+						$$.val=$2.val;
 					}
+
 					;
 				
 				

@@ -111,7 +111,8 @@ chare \'.\'
              j++;
         }
         printf("%d",atoi(*ch));
-        if(atoi(*ch)>=-32768){printf("  entier negatif \n ");col+=yyleng; yylval.chaine = strdup(*ch); }
+        sprintf(s,"%d",atoi(*ch));
+        if(atoi(*ch)>=-32768){printf("  entier negatif \n ");col+=yyleng; yylval.chaine = strdup(s); }
         else{printf("erreur lexicale cet entier est inferieur a -32767 \n ");exit(0);}
     }
     else{

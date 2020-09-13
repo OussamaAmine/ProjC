@@ -205,16 +205,15 @@ void getNature(char nom[],char nature[])
    if(p!=NULL){strcpy(p->nature,nature);}
 
 }
-/*void getValeur(char nom[],char valeur[])
-{
-    element *p;
-   int i=rechercher(nom, &p);
-   if(p!=NULL){printf("aaaaaaaaaa %s aaaaaaaa",p->taille);
-	   strcpy(p->taille,valeur);}*/
+
  char* getValeur(char* idf){
 	element * adr; 
 	rechercher(idf,&adr); 
 	printf("aaaaaaaaaa %s aaaaaaaa",adr->taille);
 	return adr->taille;
 }
-	
+void setValeur(char* idf,char* valeur){
+	element * adr; 
+	rechercher(idf,&adr); 
+	 if(adr!=NULL){strcpy(adr->taille,valeur);}
+}
