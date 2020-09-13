@@ -10,10 +10,8 @@ extern int line;
 extern int col;
 int sauvtype = 0;
 int nbr_inst_if=0;
-int qc=1;
-int deb_While=0;
-int deb_For=0;
-int varQuad=1 ,varBrch=1;
+int ntemp=1;
+int varQuad=1 ,varBrch=0;
 int qcT=0;
 int qcT2=0;
 int qcT3=0;
@@ -165,8 +163,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 					inserer($1,$3.type,"variable",$3.val);
 				}
 				generer("=",$3.val,"",$1);
-				qc++;
-				varBrch++;
+				ntemp++;
 			}	
 			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
 			|IDF ADD AFF valeur
@@ -179,11 +176,40 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 				{
 					yyerror("\n********* erreur semantique : variable pas de type INTEGER *******\n");	
 				}
-				generer("=",$3.val,"",$1);
-				qc++;
-				varBrch++;
-			}*/
-			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
+				if($4.type!=1)
+				{
+					yyerror("\n********* erreur semantique : valeur pas de type INTEGER *******\n");	
+				}
+				char sss[10];
+				sprintf(sss, "T%d", ntemp);
+			
+				generer("=",$1," ",sss);	
+				generer("+",sss,$4.val,sss);;					
+				generer("=",sss," ",$1);	
+				int x= atoi(getValeur($1))+atoi($4.val);
+				sprintf(sss,"%d",x);
+				setValeur($1,sss);			
+				ntemp++;	
+				
+			}
+			|IDF SUB AFF valeur
+			{
+				if(declared($1)==0)
+	    		{	yyerror("\n*********** erreur semantique : variable non declare **********\n");}
+				if(gettype($1)!=1)
+				{	yyerror("\n********* erreur semantique : variable pas de type INTEGER *******\n");	}
+				if($4.type!=1)
+				{	yyerror("\n********* erreur semantique : valeur pas de type INTEGER *******\n");}
+				
+				char sss[10];	sprintf(sss, "T%d", ntemp);			
+				generer("=",$1," ",sss);					
+				generer("-",sss,$4.val,sss);									
+				generer("=",sss," ",$1);								
+				int x= atoi(getValeur($1))-atoi($4.val);				
+				sprintf(sss,"%d",x);			
+				setValeur($1,sss);		
+				ntemp++;								
+			}
 ;
 
 			
@@ -199,10 +225,9 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 								{ 
 								$$.type=max($1.type,$3.type);
 								$1.val=strdup($$.val);
-								sprintf($$.val, "T%d", qc);
+								sprintf($$.val, "T%d", ntemp);
 								generer("+",$1.val,$3.val,$$.val);
-								varBrch++;
-								qc++;
+								ntemp++;
 								}
 							}
 							|Expression_Arth SUB Expression_Arth
@@ -213,10 +238,9 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 							{
 								$$.type=max($1.type,$3.type);
 								$1.val=strdup($$.val);
-								sprintf($$.val, "T%d", qc);
+								sprintf($$.val, "T%d", ntemp);
 								generer("-",$1.val,$3.val,$$.val);
-								varBrch++;
-								qc++;
+								ntemp++;
 							}
 							}
 						
@@ -228,10 +252,9 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 							{
 								$$.type=max($1.type,$3.type);
 								$1.val=strdup($$.val);
-								sprintf($$.val, "T%d", qc);
-								generer("*",$1.val,$3.val,$$.val);
-								varBrch++;								
-								qc++;
+								sprintf($$.val, "T%d", ntemp);
+								generer("*",$1.val,$3.val,$$.val);								
+								ntemp++;
 							}
 							}
 
@@ -250,10 +273,9 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 								{
 								$$.type=max($1.type,$3.type);
 								$1.val=strdup($$.val);
-								sprintf($$.val, "T%d", qc);
-								generer("/",$1.val,$3.val,$$.val);
-								varBrch++;								
-								qc++;
+								sprintf($$.val, "T%d", ntemp);
+								generer("/",$1.val,$3.val,$$.val);			
+								ntemp++;
 								}
 							}
 							} 
@@ -346,18 +368,16 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					{
 							$1.val=strdup($$.val);
-							sprintf($$.val,"T%d",qc);
+							sprintf($$.val,"T%d",ntemp);
 							quadL(3,$1.val,$3.val,$$.val);							
-							qc++;
-							varQuad=qc;
+							ntemp++;
 						} 
 					|Expression_lgiq OR Expression_lgiq
 					{
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
-						quadL(2,$1.val,$3.val,$$.val);						
-						qc++;
-						varQuad=qc;
+						sprintf($$.val,"T%d",ntemp);
+						quadL(2,$1.val,$3.val,$$.val);			
+						ntemp++;
 						}
 					|lgiq
 					{
@@ -378,9 +398,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						if($1.val==NULL||$3.val==NULL){
 							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");	}
 					$1.val=strdup($$.val);
-					sprintf($$.val,"T%d",qc);
+					sprintf($$.val,"T%d",ntemp);
 					quadC(2,$1.val,$3.val,$$.val);					
-					varQuad=qc++;
+					ntemp++;
 					}
 				} 
 
@@ -393,9 +413,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
+						sprintf($$.val,"T%d",ntemp);
 						quadC(1,$1.val,$3.val,$$.val);						
-						qc++;
+						ntemp++;
 					}
 
 					|lgiq INFE lgiq
@@ -407,10 +427,10 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
+						sprintf($$.val,"T%d",ntemp);
 						quadC(4,$1.val,$3.val,$$.val);						
-						qc++;
-						varQuad=qc++;
+						ntemp++;
+						varQuad=ntemp;
 					}
 
 					|lgiq INF lgiq
@@ -422,10 +442,10 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
+						sprintf($$.val,"T%d",ntemp);
 						quadC(3,$1.val,$3.val,$$.val);						
-						qc++;				
-						varQuad=qc;		
+						ntemp++;				
+						varQuad=ntemp;		
 					}
 
 					|lgiq EGAL lgiq
@@ -438,9 +458,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							//yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
+						sprintf($$.val,"T%d",ntemp);
 						quadC(5,$1.val,$3.val,$$.val);						
-						qc++;
+						ntemp++;
 					}
 
 					|lgiq DIFF lgiq
@@ -452,9 +472,9 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 							yyerror("\n******** erreur semantique : variable non initialise  ***********\n");
 						}
 						$1.val=strdup($$.val);
-						sprintf($$.val,"T%d",qc);
+						sprintf($$.val,"T%d",ntemp);
 						quadC(6,$1.val,$3.val,$$.val);						
-						qc++;
+						ntemp++;
 					}
 
 					|Expression_Arth
@@ -465,8 +485,8 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					;
 
 
-Inst_If: IF {nbr_inst_if++;} PO Expression_lgiq PF
-		AOUV {varBrch++;} corps AFER {Maj(varQuad,varBrch);}
+Inst_If: IF PO Expression_lgiq PF
+		AOUV corps AFER 
 		Inst_elif
 		;
 
@@ -479,14 +499,12 @@ Inst_else: ELSE AOUV corps AFER
 			|
 			;
 
-boucle_while: WHILE {deb_While=qc;} PO Expression_lgiq PF
-				AOUV {varBrch++;} corps {Maj(deb_While + 1,varBrch+1);} AFER 
-				{generer( "BR",convert(deb_While + 1 ),"",""); }		
+boucle_while: WHILE PO Expression_lgiq PF
+				AOUV corps AFER		
 				;
 
-boucle_for: FOR {deb_For=qc;} PO IDF IN inte DeuxPoints inte PF
-			AOUV corps {Maj(deb_For + 2,varBrch+1);} AFER 
-			{generer( "BR",convert(deb_For + 1 ),"",""); }
+boucle_for: FOR PO IDF IN inte DeuxPoints inte PF
+			AOUV corps AFER 
 			;
 
 
