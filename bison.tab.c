@@ -1687,8 +1687,8 @@ yyreduce:
 						//printf("une affectation à la valeur de %s[%d] \n",$1,$3);
 	    				char*s;
 	    				s=strdup((yyvsp[(1) - (6)].chaine));
-	    				sprintf(s, "%s[%d]",(yyvsp[(1) - (6)].chaine),atoi(getValeur((yyvsp[(3) - (6)].chaine))));
-						generer("=",(yyvsp[(6) - (6)].NT).val,"",s);					
+	    				//sprintf(s, "%s[%d]",$1,atoi(getValeur($3)));
+						generer("=",(yyvsp[(6) - (6)].NT).val,"",(yyvsp[(3) - (6)].chaine));					
 	    			}
 	    		}
     		;}
