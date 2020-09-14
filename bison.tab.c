@@ -512,11 +512,11 @@ static const yytype_uint16 yyrline[] =
 {
        0,    58,    58,    61,    64,    67,    68,    69,    70,    71,
       75,    90,   105,   114,   116,   126,   135,   136,   137,   138,
-     141,   142,   143,   144,   150,   167,   178,   179,   204,   227,
-     242,   256,   270,   317,   330,   349,   365,   370,   377,   384,
-     391,   395,   402,   416,   430,   445,   460,   475,   489,   497,
-     498,   497,   502,   503,   504,   502,   507,   507,   509,   511,
-     511,   540,   540,   549,   549
+     141,   142,   143,   144,   150,   167,   178,   194,   219,   242,
+     257,   271,   285,   332,   345,   364,   380,   385,   392,   399,
+     406,   410,   417,   431,   445,   460,   475,   490,   504,   512,
+     513,   512,   517,   518,   519,   517,   522,   522,   524,   526,
+     526,   555,   555,   564,   564
 };
 #endif
 
@@ -1684,10 +1684,31 @@ yyreduce:
 			;}
     break;
 
+  case 26:
+
+/* Line 1455 of yacc.c  */
+#line 179 "bison.y"
+    {
+				if(declared((yyvsp[(1) - (9)].chaine))==0)
+	    		{
+	    			yyerror("\n************* erreur semantique : variable non declare *********\n");
+				}
+				qcTI++;
+				qcT[qcTI][0]=qc;
+				generer("=",(yyvsp[(6) - (9)].NT).val," ",(yyvsp[(1) - (9)].chaine));
+				qcT[qcTI][1]=qc;
+				generer("BR","","","");
+				liste[qcT[qcTI][0]-1].op1=convert(qc);
+				generer("=",(yyvsp[(8) - (9)].NT).val," ",(yyvsp[(1) - (9)].chaine));
+				liste[qcT[qcTI][1]].op1=convert(qc);
+				qcTI--;
+			;}
+    break;
+
   case 27:
 
 /* Line 1455 of yacc.c  */
-#line 180 "bison.y"
+#line 195 "bison.y"
     {
 				if(declared((yyvsp[(1) - (4)].chaine))==0)
 	    		{
@@ -1717,7 +1738,7 @@ yyreduce:
   case 28:
 
 /* Line 1455 of yacc.c  */
-#line 205 "bison.y"
+#line 220 "bison.y"
     {
 				if(declared((yyvsp[(1) - (4)].chaine))==0)
 	    		{	yyerror("\n*********** erreur semantique : variable non declare **********\n");}
@@ -1740,7 +1761,7 @@ yyreduce:
   case 29:
 
 /* Line 1455 of yacc.c  */
-#line 228 "bison.y"
+#line 243 "bison.y"
     {	
 								if(((yyvsp[(1) - (3)].NT).type==3)||((yyvsp[(3) - (3)].NT).type==3)||((yyvsp[(1) - (3)].NT).type==4)||((yyvsp[(3) - (3)].NT).type==4))
 								{
@@ -1760,7 +1781,7 @@ yyreduce:
   case 30:
 
 /* Line 1455 of yacc.c  */
-#line 243 "bison.y"
+#line 258 "bison.y"
     {
 							if(((yyvsp[(1) - (3)].NT).type==3)||((yyvsp[(3) - (3)].NT).type==3)||((yyvsp[(1) - (3)].NT).type==4)||((yyvsp[(3) - (3)].NT).type==4))
 							{	yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");							}
@@ -1778,7 +1799,7 @@ yyreduce:
   case 31:
 
 /* Line 1455 of yacc.c  */
-#line 257 "bison.y"
+#line 272 "bison.y"
     {
 							if(((yyvsp[(1) - (3)].NT).type==3)||((yyvsp[(3) - (3)].NT).type==3)||((yyvsp[(1) - (3)].NT).type==4)||((yyvsp[(3) - (3)].NT).type==4))
 							{	yyerror("\n******* Erreur semantique :caractere ou booleen dans une expression arithmetique *******\n");}
@@ -1796,7 +1817,7 @@ yyreduce:
   case 32:
 
 /* Line 1455 of yacc.c  */
-#line 272 "bison.y"
+#line 287 "bison.y"
     {
 							if(((yyvsp[(1) - (3)].NT).type==3)||((yyvsp[(3) - (3)].NT).type==3)||((yyvsp[(1) - (3)].NT).type==4)||((yyvsp[(3) - (3)].NT).type==4))
 							{
@@ -1821,7 +1842,7 @@ yyreduce:
   case 33:
 
 /* Line 1455 of yacc.c  */
-#line 318 "bison.y"
+#line 333 "bison.y"
     {
 							if(declared((yyvsp[(1) - (1)].chaine))==0)
 							{
@@ -1831,7 +1852,7 @@ yyreduce:
 							{	
 								(yyval.NT).val=strdup(getValeur((yyvsp[(1) - (1)].chaine)));
 								(yyval.NT).type=gettype((yyvsp[(1) - (1)].chaine));
-								used((yyvsp[(1) - (1)].chaine));
+								
 							}
 							;}
     break;
@@ -1839,7 +1860,7 @@ yyreduce:
   case 34:
 
 /* Line 1455 of yacc.c  */
-#line 331 "bison.y"
+#line 346 "bison.y"
     {
 							if(declared((yyvsp[(1) - (4)].chaine))==0)
 							{	yyerror("\n******* erreur semantique : tableau non declare  *******\n");}
@@ -1854,7 +1875,7 @@ yyreduce:
 								sprintf(s, "%s[%d]", (yyvsp[(1) - (4)].chaine),atoi((yyvsp[(3) - (4)].NT).val));
 								(yyval.NT).val=strdup(s);
 								(yyval.NT).type=gettype((yyvsp[(1) - (4)].chaine));
-								used((yyvsp[(1) - (4)].chaine));
+								
 								}
 							}
 							;}
@@ -1863,7 +1884,7 @@ yyreduce:
   case 35:
 
 /* Line 1455 of yacc.c  */
-#line 350 "bison.y"
+#line 365 "bison.y"
     {
 							if(declared((yyvsp[(1) - (4)].chaine))==0)
 							{	yyerror("\n******** erreur semantique : tableau non declare  ***********\n");	}
@@ -1876,7 +1897,7 @@ yyreduce:
 							sprintf(s, "%s[%s]", (yyvsp[(1) - (4)].chaine),(yyvsp[(3) - (4)].chaine));
 							(yyval.NT).val=strdup(s);
 							(yyval.NT).type=gettype((yyvsp[(1) - (4)].chaine));
-							used((yyvsp[(1) - (4)].chaine));
+							
 							}
 							;}
     break;
@@ -1884,7 +1905,7 @@ yyreduce:
   case 36:
 
 /* Line 1455 of yacc.c  */
-#line 366 "bison.y"
+#line 381 "bison.y"
     {
 								(yyval.NT).val=(yyvsp[(1) - (1)].NT).val;
 								(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
@@ -1894,7 +1915,7 @@ yyreduce:
   case 37:
 
 /* Line 1455 of yacc.c  */
-#line 371 "bison.y"
+#line 386 "bison.y"
     {
 								(yyval.NT).val=(yyvsp[(2) - (3)].NT).val;
 								(yyval.NT).type=(yyvsp[(2) - (3)].NT).type;
@@ -1904,7 +1925,7 @@ yyreduce:
   case 38:
 
 /* Line 1455 of yacc.c  */
-#line 378 "bison.y"
+#line 393 "bison.y"
     {
 							(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 							sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1916,7 +1937,7 @@ yyreduce:
   case 39:
 
 /* Line 1455 of yacc.c  */
-#line 385 "bison.y"
+#line 400 "bison.y"
     {
 						(yyvsp[(1) - (3)].NT).val=strdup((yyval.NT).val);
 						sprintf((yyval.NT).val,"T%d",ntemp);
@@ -1928,7 +1949,7 @@ yyreduce:
   case 40:
 
 /* Line 1455 of yacc.c  */
-#line 392 "bison.y"
+#line 407 "bison.y"
     {
 						(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
 					;}
@@ -1937,7 +1958,7 @@ yyreduce:
   case 41:
 
 /* Line 1455 of yacc.c  */
-#line 396 "bison.y"
+#line 411 "bison.y"
     {
 						(yyval.NT).type=(yyvsp[(2) - (3)].NT).type;
 						(yyval.NT).val=(yyvsp[(2) - (3)].NT).val;
@@ -1947,7 +1968,7 @@ yyreduce:
   case 42:
 
 /* Line 1455 of yacc.c  */
-#line 403 "bison.y"
+#line 418 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 					{	yyerror("\n******** erreur semantique : types incompatible  ***********\n");}
 					else
@@ -1965,7 +1986,7 @@ yyreduce:
   case 43:
 
 /* Line 1455 of yacc.c  */
-#line 417 "bison.y"
+#line 432 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
@@ -1983,7 +2004,7 @@ yyreduce:
   case 44:
 
 /* Line 1455 of yacc.c  */
-#line 431 "bison.y"
+#line 446 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
@@ -2002,7 +2023,7 @@ yyreduce:
   case 45:
 
 /* Line 1455 of yacc.c  */
-#line 446 "bison.y"
+#line 461 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
@@ -2021,7 +2042,7 @@ yyreduce:
   case 46:
 
 /* Line 1455 of yacc.c  */
-#line 461 "bison.y"
+#line 476 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{	
 							
@@ -2040,7 +2061,7 @@ yyreduce:
   case 47:
 
 /* Line 1455 of yacc.c  */
-#line 476 "bison.y"
+#line 491 "bison.y"
     {	if(!((yyvsp[(1) - (3)].NT).type==(yyvsp[(3) - (3)].NT).type))
 						{
 							yyerror("\n******** erreur semantique : types incompatible  ***********\n");
@@ -2058,7 +2079,7 @@ yyreduce:
   case 48:
 
 /* Line 1455 of yacc.c  */
-#line 490 "bison.y"
+#line 505 "bison.y"
     {
 						(yyval.NT).val=(yyvsp[(1) - (1)].NT).val;
 						(yyval.NT).type=(yyvsp[(1) - (1)].NT).type;
@@ -2068,56 +2089,56 @@ yyreduce:
   case 49:
 
 /* Line 1455 of yacc.c  */
-#line 497 "bison.y"
+#line 512 "bison.y"
     {qcTI++; qcT[qcTI][0]=qc;;}
     break;
 
   case 50:
 
 /* Line 1455 of yacc.c  */
-#line 498 "bison.y"
+#line 513 "bison.y"
     {qcT[qcTI][1]=qc;;}
     break;
 
   case 52:
 
 /* Line 1455 of yacc.c  */
-#line 502 "bison.y"
+#line 517 "bison.y"
     {ifelse=0;generer("BR","","",""); liste[qcT[qcTI][0]-1].op1=convert(qc);;}
     break;
 
   case 53:
 
 /* Line 1455 of yacc.c  */
-#line 503 "bison.y"
+#line 518 "bison.y"
     {qcT[qcTI][2]=qc;;}
     break;
 
   case 54:
 
 /* Line 1455 of yacc.c  */
-#line 504 "bison.y"
+#line 519 "bison.y"
     {qcT[qcTI][3]=qc;generer("BR","","","");;}
     break;
 
   case 56:
 
 /* Line 1455 of yacc.c  */
-#line 507 "bison.y"
+#line 522 "bison.y"
     {generer("BR","","","");ifelse=1;;}
     break;
 
   case 58:
 
 /* Line 1455 of yacc.c  */
-#line 509 "bison.y"
+#line 524 "bison.y"
     {liste[qcT[qcTI][0]-1].op1=convert(qc);qcTI--;;}
     break;
 
   case 59:
 
 /* Line 1455 of yacc.c  */
-#line 511 "bison.y"
+#line 526 "bison.y"
     {if(ifelse==0)
 					{liste[qcT[qcTI][2]-1].op1=convert(qc);}
 				if(ifelse==1)
@@ -2129,7 +2150,7 @@ yyreduce:
   case 60:
 
 /* Line 1455 of yacc.c  */
-#line 518 "bison.y"
+#line 533 "bison.y"
     {	
 				if(ifelse==0){
 					liste[qcT[qcTI][3]].op1=convert(qc);
@@ -2146,14 +2167,14 @@ yyreduce:
   case 61:
 
 /* Line 1455 of yacc.c  */
-#line 540 "bison.y"
+#line 555 "bison.y"
     {qcWI++; qcW[qcWI]=qc;;}
     break;
 
   case 62:
 
 /* Line 1455 of yacc.c  */
-#line 542 "bison.y"
+#line 557 "bison.y"
     {
 					liste[qcW[qcWI]-1].op1=convert(qc);
 					generer("BR",convert(qcW[qcWI]),"","");
@@ -2164,7 +2185,7 @@ yyreduce:
   case 63:
 
 /* Line 1455 of yacc.c  */
-#line 549 "bison.y"
+#line 564 "bison.y"
     {
 				 if(declared((yyvsp[(3) - (8)].chaine))==0){	yyerror("\n******* erreur semantique : idf non declare  *******\n");}
 				 if(!(((yyvsp[(5) - (8)].NT).type==1)&&(atoi((yyvsp[(5) - (8)].NT).val)>=0))||!(((yyvsp[(7) - (8)].NT).type==1)&&(atoi((yyvsp[(7) - (8)].NT).val)>=0)))
@@ -2181,7 +2202,7 @@ yyreduce:
   case 64:
 
 /* Line 1455 of yacc.c  */
-#line 560 "bison.y"
+#line 575 "bison.y"
     {
 					
 					generer("BR",convert(qcF[qcFI]-2),"","");
@@ -2193,7 +2214,7 @@ yyreduce:
 
 
 /* Line 1455 of yacc.c  */
-#line 2197 "bison.tab.c"
+#line 2218 "bison.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2405,7 +2426,7 @@ yyreturn:
 
 
 /* Line 1675 of yacc.c  */
-#line 576 "bison.y"
+#line 591 "bison.y"
 
 int yyerror(char* msg)
 {printf("%s : ligne %d , colonne : %d\n",msg,line,col);

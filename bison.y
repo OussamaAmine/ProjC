@@ -176,6 +176,21 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 				ntemp++;
 			}	
 			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
+			{
+				if(declared($1)==0)
+	    		{
+	    			yyerror("\n************* erreur semantique : variable non declare *********\n");
+				}
+				qcTI++;
+				qcT[qcTI][0]=qc;
+				generer("=",$6.val," ",$1);
+				qcT[qcTI][1]=qc;
+				generer("BR","","","");
+				liste[qcT[qcTI][0]-1].op1=convert(qc);
+				generer("=",$8.val," ",$1);
+				liste[qcT[qcTI][1]].op1=convert(qc);
+				qcTI--;
+			}
 			|IDF ADD AFF valeur
 			{
 				if(declared($1)==0)
@@ -324,7 +339,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 							{	
 								$$.val=strdup(getValeur($1));
 								$$.type=gettype($1);
-								used($1);
+								
 							}
 							}
 							|IDF COUV valeur CFER
@@ -342,7 +357,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 								sprintf(s, "%s[%d]", $1,atoi($3.val));
 								$$.val=strdup(s);
 								$$.type=gettype($1);
-								used($1);
+								
 								}
 							}
 							}
@@ -359,7 +374,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 							sprintf(s, "%s[%s]", $1,$3);
 							$$.val=strdup(s);
 							$$.type=gettype($1);
-							used($1);
+							
 							}
 							}
 							|valeur

@@ -29,8 +29,6 @@ void inserer (char nom[], int code,char nature[30],char taille[255]);
 int gettype(char nom[]);
 char* substring(char string[]);
 void afficher();
-void used(char nom[]);
-void delete_unused();
 void modifier( char nom[], int code);
  char* getValeur(char* idf);
 void setValeur(char* idf,char* valeur);
