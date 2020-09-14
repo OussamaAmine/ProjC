@@ -24,21 +24,21 @@ char* convert(int i){
 void quadL(int i, char*b, char* c, char* d){
 	switch(i){
 		case 1 :
-			generer("BNZ",convert(ntemp),b,"");
+			generer("BNZ",convert(qc+2),b,"");
 			//generer("=","","1",d); 
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","0",d);
 		break;
 		case 2 :
-			generer("BNZ",convert(ntemp+2),b,""); 
-			generer("BNZ",convert(ntemp),c,"");
+			generer("BNZ",convert(qc+4),b,""); 
+			generer("BNZ",convert(qc+2),c,"");
 			//generer("=","","0",d); 
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
 		break;
 		case 3 :
-		generer("BZ",convert(ntemp+2),b,""); 
-		generer("BZ",convert(ntemp),c,"");
+		generer("BZ",convert(qc+4),b,""); 
+		generer("BZ",convert(qc+2),c,"");
 		//generer("=","","1",d); 
 		//generer("BR",convert(qc+1),"",""); 
 		//generer("=","","0",d);
@@ -51,42 +51,42 @@ void quadC(int i, char* b, char* c, char* d){
 	switch(i){
 		case 1 :
 			generer("-",b,c,d); 
-			generer("BG",convert(ntemp),d,"");
+			generer("BG",convert(qc+2),d,"");
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
 		break;
 		case 2 :
 			generer("-",b,c,d); 
-			generer("BGE",convert(ntemp),d,"");
+			generer("BGE",convert(qc+2),d,"");
 			//generer("=","","0",d);		
 			//generer("=","","1",d);
 		break;
 		case 3 :
 		
 			generer("-",b,c,d); 
-			generer("BL",convert(ntemp),d,"");				
+			generer("BL",convert(ntemp),d,"");	
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
 		break;
 		case 4 :
 			generer("-",b,c,d); 
-			generer("BLE",convert(ntemp),d,"");
+			generer("BLE",convert(qc+2),d,"");
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
 		break;
 		case 5 :
 			generer("-",b,c,d); 
-			generer("BZ",convert(ntemp),d,"");
+			generer("BZ",convert(qc+2),d,"");
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
 		break;
 		case 6 :
 			generer("-",b,c,d); 
-			generer("BNZ",convert(ntemp),d,"");
+			generer("BNZ",convert(qc+2),d,"");
 			//generer("=","","0",d);
 			//generer("BR",convert(qc+1),"",""); 
 			//generer("=","","1",d);
@@ -96,10 +96,9 @@ void quadC(int i, char* b, char* c, char* d){
 
 /********************************************Mise à jour des branchement**************************************/
 void Maj(int nQc, int jmp){
-	char buff[10];	
-	sprintf(buff, "%03d", jmp);
+	char buff[10];
+	sprintf(buff, "%02d", jmp);
 	liste[nQc].op1=strdup(buff);
-	printf(" ***********num de quad ::%d ******************",nQc);
 }
 
 
