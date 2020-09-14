@@ -142,7 +142,7 @@ void getNature(char nom[],char nature[])
  char* getValeur(char* idf){
 	element * adr; 
 	rechercher(idf,&adr); 
-	printf("aaaaaaaaaa %s aaaaaaaa",adr->taille);
+	
 	return adr->taille;
 }
 void setValeur(char* idf,char* valeur){

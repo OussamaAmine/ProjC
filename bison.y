@@ -156,10 +156,29 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 					{	err_taille_tab($3.type,$3.val);}
 		    		else 											
 					{	err_incompa_typ_tab(gettype($1),$6.type);
-						printf("une affectation à la valeur de %s[%d] \n",$1,$3);
+						//printf("une affectation à la valeur de %s[%d] \n",$1,$3);
 	    				char*s;
 	    				s=strdup($1);
 	    				sprintf(s, "%s[%d]",$1,atoi($3.val));
+						generer("=",$6.val,"",s);					
+	    			}
+	    		}
+    		}
+			|IDF COUV IDF CFER AFF Expression_lgiq
+			{
+				if(declared($1)==0)
+	    		{	yyerror("\n********* erreur semantique : tableau non declare ********\n");}
+				if(declared($3)==0)
+	    		{	yyerror("\n********* erreur semantique : variable non declare ********\n");}
+	    		else
+	    		{	if(!((gettype($3)==1)&&(atoi(getValeur($3))>=0)))
+					{	err_taille_tab(gettype($3),getValeur($3));}
+		    		else 											
+					{	err_incompa_typ_tab(gettype($1),$6.type);
+						//printf("une affectation à la valeur de %s[%d] \n",$1,$3);
+	    				char*s;
+	    				s=strdup($1);
+	    				sprintf(s, "%s[%d]",$1,atoi(getValeur($3)));
 						generer("=",$6.val,"",s);					
 	    			}
 	    		}
@@ -319,7 +338,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 								}
 								else
 								{
-								printf("%d",$4.val);
+								
 								$$.type=max($2.type,$4.type);
 								$2.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
