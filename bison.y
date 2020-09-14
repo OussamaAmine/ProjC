@@ -178,8 +178,8 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 						//printf("une affectation à la valeur de %s[%d] \n",$1,$3);
 	    				char*s;
 	    				s=strdup($1);
-	    				//sprintf(s, "%s[%d]",$1,atoi(getValeur($3)));
-						generer("=",$6.val,"",$3);					
+	    				sprintf(s, "%s[%s]",$1,$3);
+						generer("=",$6.val,"",s);					
 	    			}
 	    		}
     		}
