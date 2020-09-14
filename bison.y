@@ -11,11 +11,10 @@ extern int col;
 int sauvtype = 0;
 int nbr_inst_if=0;
 int ntemp=1;
-int qcW=0,qcF=0;
-int qcT=0;
-int qcT2=0;
-int qcT3=0;
-int qcT4=0;
+int qcW[20],qcF[20];
+int qcWI=-1,qcFI=-1;
+int qcT[20][4];
+int qcTI=-1;
 int ifelse=-1;
 char * idf_prgm;
 char varr[100][255];
@@ -495,36 +494,37 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					;
 
 
-Inst_If: IF PO Expression_lgiq PF{qcT=qc;}
-		AOUV corps AFER {qcT2=qc;}
+Inst_If: IF PO Expression_lgiq PF{qcTI++; qcT[qcTI][0]=qc;}
+		AOUV corps AFER {qcT[qcTI][1]=qc;}
 		Inst_elif
 		;
 
-Inst_elif: ELSEIF	{ifelse=0;generer("BR","","",""); liste[qcT-1].op1=convert(qc);}
-			 PO Expression_lgiq PF {qcT3=qc;}
-			AOUV corps AFER	{qcT4=qc;generer("BR","","","");}
+Inst_elif: ELSEIF	{ifelse=0;generer("BR","","",""); liste[qcT[qcTI][0]-1].op1=convert(qc);}
+			 PO Expression_lgiq PF {qcT[qcTI][2]=qc;}
+			AOUV corps AFER	{qcT[qcTI][3]=qc;generer("BR","","","");}
 			Inst_else 
 
 			|{generer("BR","","","");ifelse=1;}Inst_else
 
-			|{liste[qcT-1].op1=convert(qc);}
+			|{liste[qcT[qcTI][0]-1].op1=convert(qc);qcTI--;}
 			;
 Inst_else: ELSE {if(ifelse==0)
-					{liste[qcT3-1].op1=convert(qc);}
+					{liste[qcT[qcTI][2]-1].op1=convert(qc);}
 				if(ifelse==1)
 				{
-					liste[qcT-1].op1=convert(qc);
+					liste[qcT[qcTI][0]-1].op1=convert(qc);
 				}}
 			AOUV corps AFER	 	
 			{	
 				if(ifelse==0){
-					liste[qcT4].op1=convert(qc);
+					liste[qcT[qcTI][3]].op1=convert(qc);
 				}
 				if(ifelse==1)
 				{
-					/*liste[qcT-1].op1=convert(qc);*/
+					/*liste[qcT[qcTI][0]-1].op1=convert(qc);*/
 				}
-				liste[qcT2].op1=convert(qc);
+				liste[qcT[qcTI][1]].op1=convert(qc);
+				qcTI--;
 			}		
 			;
 
@@ -537,11 +537,12 @@ Inst_else: ELSE {if(ifelse==0)
 
 
 
-boucle_while: WHILE{qcW=qc;} PO Expression_lgiq PF
+boucle_while: WHILE{qcWI++; qcW[qcWI]=qc;} PO Expression_lgiq PF
 				AOUV corps AFER		
 				{
-					liste[qcW-1].op1=convert(qc);
-					generer("BR",convert(qcW),"","");
+					liste[qcW[qcWI]-1].op1=convert(qc);
+					generer("BR",convert(qcW[qcWI]),"","");
+					qcWI--;
 				}
 				;
 
@@ -551,16 +552,16 @@ boucle_for: FOR PO IDF IN valeur DeuxPoints valeur PF {
 				{	yyerror("\n******* erreur semantique : valeur pas de type entier positif  *******\n");	}	
 				 char s[10];	
 				sprintf(s,"T%d",ntemp);
-				
 				quadC(3,$5.val,$7.val,s);						
 				ntemp++;
-				qcF=qc;
+				qcFI++;
+				qcF[qcFI]=qc;
 			 }
 			AOUV corps AFER {
 					
-					generer("BR",convert(qcF-2),"","");
-					liste[qcF-1].op1=convert(qc);
-
+					generer("BR",convert(qcF[qcFI]-2),"","");
+					liste[qcF[qcFI]-1].op1=convert(qc);
+				qcFI--;
 			}
 			;
 
