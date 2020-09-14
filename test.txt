@@ -1,10 +1,23 @@
 PROGRAM Amffhdhs
 INTEGER B <- 5
-WHILE(7<5){     
+C <- 'a'
+B+<-2
+IF(7<5){  
+       
+    B<-(-10)
+    B<-(10/6)
+}ELSE IF(7>5){
     B<-10
-    B<-(10+15)/18+14
+    B<-10+15/18+1
 }
-    WHILE(7<5){     
+ELSE{
     B<-10
+    B<-10
+}
+WHILE(B>6){
+    B<-6
+}
+FOR(B IN 1 : 4){
+    B<-6
 }
 END

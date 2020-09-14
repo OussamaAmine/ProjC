@@ -11,10 +11,11 @@ extern int col;
 int sauvtype = 0;
 int nbr_inst_if=0;
 int ntemp=1;
-int varQuad=1 ,varBrch=0;
-int qcT=0;
-int qcT2=0;
-int qcT3=0;
+int qcW[20],qcF[20];
+int qcWI=-1,qcFI=-1;
+int qcT[20][4];
+int qcTI=-1;
+int ifelse=-1;
 char * idf_prgm;
 char varr[100][255];
 int j=0; 
@@ -82,22 +83,31 @@ Declaration:MC_type IDF COUV valeur CFER
 				{
 					inserer($2,10+sauvtype,"tableau",$4.val);
 					generer("BOUNDS","1",$4.val,"");
-					varBrch++;
 					generer("ADEC",$2,"","");
-					varBrch++;
 				}							
 			}
 			}
 			|MC_type IDF COUV IDF CFER
-
+			{
+			if(declared($2)==1)
+			{	yyerror("\n******************* double declaration *****************\n");}
+			else 
+			{	if(!((gettype($4)==1)&&(atoi(getValeur($4))>=0)))
+				{	err_taille_tab(gettype($4),getValeur($4));}	
+				else
+				{
+					inserer($2,10+sauvtype,"tableau",getValeur($4));
+					generer("BOUNDS","1",getValeur($4),"");
+					generer("ADEC",$2,"","");
+				}							
+			}
+			}
 			|MC_type IDF AFF valeur
 			{
 				if(declared($2)==1){yyerror("\n***************** double declaration *****************\n");}
 				else{
 					inserer($2,sauvtype,"variable",$4.val);
-					
 					generer("=",$4.val,"",$2);
-					varBrch++;
 				}
 			}
 			
@@ -110,7 +120,6 @@ Declaration:MC_type IDF COUV valeur CFER
 							else
 							{
 								inserer($1,sauvtype,"variable","0");
-								printf("sauv type %d \n",sauvtype);
 												
 							} 
 						} 
@@ -163,6 +172,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 					inserer($1,$3.type,"variable",$3.val);
 				}
 				generer("=",$3.val,"",$1);
+				setValeur($1,$3.val);
 				ntemp++;
 			}	
 			|IDF AFF PO  Expression_lgiq  VIR Expression_Arth VIR Expression_Arth PF
@@ -182,7 +192,6 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 				}
 				char sss[10];
 				sprintf(sss, "T%d", ntemp);
-			
 				generer("=",$1," ",sss);	
 				generer("+",sss,$4.val,sss);;					
 				generer("=",sss," ",$1);	
@@ -300,7 +309,7 @@ Affectation: IDF COUV valeur CFER AFF Expression_lgiq
 								$2.val=strdup($$.val);
 								sprintf($$.val, "T%d", ntemp);
 								generer("/",$2.val,$4.val,$$.val);
-								varBrch++;								
+																
 								ntemp++;
 								}
 							}
@@ -430,7 +439,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						sprintf($$.val,"T%d",ntemp);
 						quadC(4,$1.val,$3.val,$$.val);						
 						ntemp++;
-						varQuad=ntemp;
+						
 					}
 
 					|lgiq INF lgiq
@@ -445,7 +454,7 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 						sprintf($$.val,"T%d",ntemp);
 						quadC(3,$1.val,$3.val,$$.val);						
 						ntemp++;				
-						varQuad=ntemp;		
+							
 					}
 
 					|lgiq EGAL lgiq
@@ -485,26 +494,75 @@ Expression_lgiq: 	Expression_lgiq AND Expression_lgiq
 					;
 
 
-Inst_If: IF PO Expression_lgiq PF
-		AOUV corps AFER 
+Inst_If: IF PO Expression_lgiq PF{qcTI++; qcT[qcTI][0]=qc;}
+		AOUV corps AFER {qcT[qcTI][1]=qc;}
 		Inst_elif
 		;
 
-Inst_elif: ELSEIF PO Expression_lgiq PF
-			AOUV corps AFER
+Inst_elif: ELSEIF	{ifelse=0;generer("BR","","",""); liste[qcT[qcTI][0]-1].op1=convert(qc);}
+			 PO Expression_lgiq PF {qcT[qcTI][2]=qc;}
+			AOUV corps AFER	{qcT[qcTI][3]=qc;generer("BR","","","");}
 			Inst_else 
-			|Inst_else
-;
-Inst_else: ELSE AOUV corps AFER	
-			|
+
+			|{generer("BR","","","");ifelse=1;}Inst_else
+
+			|{liste[qcT[qcTI][0]-1].op1=convert(qc);qcTI--;}
+			;
+Inst_else: ELSE {if(ifelse==0)
+					{liste[qcT[qcTI][2]-1].op1=convert(qc);}
+				if(ifelse==1)
+				{
+					liste[qcT[qcTI][0]-1].op1=convert(qc);
+				}}
+			AOUV corps AFER	 	
+			{	
+				if(ifelse==0){
+					liste[qcT[qcTI][3]].op1=convert(qc);
+				}
+				if(ifelse==1)
+				{
+					/*liste[qcT[qcTI][0]-1].op1=convert(qc);*/
+				}
+				liste[qcT[qcTI][1]].op1=convert(qc);
+				qcTI--;
+			}		
 			;
 
-boucle_while: WHILE PO Expression_lgiq PF
+
+
+
+
+
+
+
+
+
+boucle_while: WHILE{qcWI++; qcW[qcWI]=qc;} PO Expression_lgiq PF
 				AOUV corps AFER		
+				{
+					liste[qcW[qcWI]-1].op1=convert(qc);
+					generer("BR",convert(qcW[qcWI]),"","");
+					qcWI--;
+				}
 				;
 
-boucle_for: FOR PO IDF IN inte DeuxPoints inte PF
-			AOUV corps AFER 
+boucle_for: FOR PO IDF IN valeur DeuxPoints valeur PF {
+				 if(declared($3)==0){	yyerror("\n******* erreur semantique : idf non declare  *******\n");}
+				 if(!(($5.type==1)&&(atoi($5.val)>=0))||!(($7.type==1)&&(atoi($7.val)>=0)))
+				{	yyerror("\n******* erreur semantique : valeur pas de type entier positif  *******\n");	}	
+				 char s[10];	
+				sprintf(s,"T%d",ntemp);
+				quadC(3,$5.val,$7.val,s);						
+				ntemp++;
+				qcFI++;
+				qcF[qcFI]=qc;
+			 }
+			AOUV corps AFER {
+					
+					generer("BR",convert(qcF[qcFI]-2),"","");
+					liste[qcF[qcFI]-1].op1=convert(qc);
+				qcFI--;
+			}
 			;
 
 
@@ -536,13 +594,10 @@ else
 }
 afficher();
 afficher_qdr();
+assembler();
 int k=0,h=0;
-/*while(k<100){
-	while(h<100){
-		printf(" %s ",varr[k][h]);h++;
-	}printf("\n");k++;
-}*/
 fclose(yyin);
+
 return 0;
 
 }

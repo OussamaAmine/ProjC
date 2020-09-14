@@ -137,7 +137,7 @@ printf("\n********************************************\n");
 printf("*            Table des symboles            *\n");
 printf("********************************************\n");
 printf(" __________________________________________________________________\n");
-printf("| NomEntite 	       |CodeEntite	   |Information           |\n");
+printf("| NomEntite 	       |Type      	   |Information           |\n");
 printf("|______________________|___________________|______________________|\n");
 
 int i=0;
@@ -147,7 +147,7 @@ int i=0;
 
   		while(p!=NULL)
   		{
-  			 printf("|%21s |%18d | %20s |\n",p->nom,p->code,p->nature);
+  			 printf("|%21s |%18s | %20s |\n",p->nom,typeVar(p->code),p->nature);
   			 p=p->suiv;
   		}
 
@@ -216,4 +216,19 @@ void setValeur(char* idf,char* valeur){
 	element * adr; 
 	rechercher(idf,&adr); 
 	 if(adr!=NULL){strcpy(adr->taille,valeur);}
+}
+char* typeVar(int i){
+	if(i==1||i==11){
+		return "INTEGER";
+	}
+	if(i==2||i==12){
+		return "NUMERIC";
+	}
+	if(i==3||i==13){
+		return "CHARACTER";
+	}
+	if(i==4||i==14){
+		return "LOGICAL";
+	}
+	return NULL;
 }
