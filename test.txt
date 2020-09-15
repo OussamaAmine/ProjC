@@ -16,8 +16,8 @@ ELSE{
     B<-10
     B<-10
 }
-WHILE(B>6){
-    B<-6
+WHILE(C>8){
+    C<-'P'
 }
 FOR(B IN 1 : 4){
     B<-6

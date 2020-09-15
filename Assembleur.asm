@@ -49,11 +49,11 @@ etiquette 24 : MOV DX, T13
 etiquette 25 : JMP etiquette 28
 etiquette 26 : MOV DX, 10
 etiquette 27 : MOV DX, 31
-etiquette 28 : MOV AX, 10
-SUB AX, 6
+etiquette 28 : MOV AX, a
+SUB AX, A
 etiquette 29 : CMP AX, 0
 JG etiquette 31
-etiquette 30 : MOV DX, 6
+etiquette 30 : MOV DX, P
 etiquette 31 : JMP etiquette 28
 etiquette 32 : MOV AX, 1
 SUB AX, 4
