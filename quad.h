@@ -15,11 +15,6 @@ void quadL(int i, char*b, char* c, char* d);
 char* convert(int i);
 void quadC(int i, char* b, char* c, char* d);
 void afficher_qdr();
-void delete_quad();
 void assembler();
-void propaDeCopie();
-void propaDeCopie();
-void simplification_algebrique();
-  void elimination_code_inutile();
-  void Maj(int nQc, int jmp);
+
 

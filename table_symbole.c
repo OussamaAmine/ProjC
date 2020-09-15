@@ -1,42 +1,8 @@
 #include "table_symbole.h"
 
-void err_taille_tab(int type,char val[]){
-	if(type==2)
-	{
-		yyerror("\n******************* erreur semantique:taille declare reelle *****************\n");
-	}
-	if(type==3)
-	{
-		yyerror("\n******************* erreur semantique:taille declare caractere *****************\n");
-	}
-	
-	if(type==4)
-	{
-		yyerror("\n******************* erreur semantique:taille declare bool ****************\n");
-	}
-	if((type==1)&&(atoi(val)<=0))
-	{
-		yyerror("\n********* erreur semantique:taille declare entier negatif **********\n");
-	}
-}
-void err_incompa_typ_var(int typdec,int typvar)
-{
-	if(((typdec==1)&&(typvar!=1))||((typdec==2)&&(typvar!=2))
-		 ||((typdec==3)&&(typvar!=3))||((typdec==4)&&(typvar!=4)))			
-	{
-		yyerror("\n********* erreur sémantique : incompatibilité de type ***********\n");
-		    	
-	}
-}
-void err_incompa_typ_tab(int typtab,int typvar)
-{
-	if(((typtab==11)&&(typvar!=1))||((typtab==12)&&(typvar!=2))
-		 ||((typtab==13)&&(typvar!=3))||((typtab==14)&&(typvar!=4)))			
-	{
-		yyerror("\n********* erreur sémantique : incompatibilité de type ***********\n");
-		    	
-	}
-}
+
+
+
 /*****************************Initialisation de la table des symboles************************************/
 void init () {
 	int i;
@@ -156,40 +122,7 @@ int i=0;
 printf("|______________________|___________________|______________________|\n");
 }
 
-/********************************************Fonctions d'optimisation***************************************/
 
-/******************************Variable d�clar�e non utilis�e*********************************************/
-void used(char nom[]){
-	int i;
-	element *q;
-	i = rechercher(nom,&q);
-	if(q!=NULL){
-		q->used=1;
-	}
-}
-
-void delete_unused(){
-	element * p, *prec;
-	int i;
-for(i=0;i<200;i++){
-	if(TS[i]!=NULL){
-		p = TS[i];
-		do{
-			if(p->used==0){
-				if(p==TS[i]){
-					TS[i]=p->suiv;
-				}
-				else{
-					prec->suiv=p->suiv;
-				}
-				free(p);
-			}
-			prec = p;
-			p=p->suiv;
-		} while(p!=NULL);
-	}
-	}
-}
 
 /*Fonction modifier*/
 
@@ -209,7 +142,7 @@ void getNature(char nom[],char nature[])
  char* getValeur(char* idf){
 	element * adr; 
 	rechercher(idf,&adr); 
-	printf("aaaaaaaaaa %s aaaaaaaa",adr->taille);
+	
 	return adr->taille;
 }
 void setValeur(char* idf,char* valeur){
@@ -231,4 +164,47 @@ char* typeVar(int i){
 		return "LOGICAL";
 	}
 	return NULL;
+}
+/*********************************Erreur de declaration de taille tableau*****************************/
+void err_taille_tab(int type,char val[]){
+	if(type==2)
+	{
+		yyerror("\n******************* erreur semantique:taille declare reelle *****************\n");
+	}
+	if(type==3)
+	{
+		yyerror("\n******************* erreur semantique:taille declare caractere *****************\n");
+	}
+	
+	if(type==4)
+	{
+		yyerror("\n******************* erreur semantique:taille declare bool ****************\n");
+	}
+	if((type==1)&&(atoi(val)<=0))
+	{
+		yyerror("\n********* erreur semantique:taille declare entier negatif **********\n");
+	}
+}
+
+
+/*********************************Erreur incompatibilité de type pour variable *****************************/
+void err_incompa_typ_var(int typdec,int typvar)
+{
+	if(((typdec==1)&&(typvar!=1))||((typdec==2)&&(typvar!=2))
+		 ||((typdec==3)&&(typvar!=3))||((typdec==4)&&(typvar!=4)))			
+	{
+		yyerror("\n********* erreur sémantique : incompatibilité de type ***********\n");
+		    	
+	}
+}
+
+/*********************************Erreur incompatibilité de type pour tableau *****************************/
+void err_incompa_typ_tab(int typtab,int typvar)
+{
+	if(((typtab==11)&&(typvar!=1))||((typtab==12)&&(typvar!=2))
+		 ||((typtab==13)&&(typvar!=3))||((typtab==14)&&(typvar!=4)))			
+	{
+		yyerror("\n********* erreur sémantique : incompatibilité de type ***********\n");
+		    	
+	}
 }
